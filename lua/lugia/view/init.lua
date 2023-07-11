@@ -1,6 +1,12 @@
+---@class ViewOptions
+---@field name string
+
+---@class View
+---@field buf number
 local M = {}
 
 function M.new(opts)
+  ---@type View
 	local self = setmetatable({}, { __index = M })
 	return self:init(opts or {})
 end
@@ -11,10 +17,7 @@ function M:init(opts)
 	if opts.name ~= nil then
 		vim.api.nvim_buf_set_name(self.buf, opts.name)
 	end
-  return self
-end
-
-function M:open_file()
+	return self
 end
 
 function M:open()

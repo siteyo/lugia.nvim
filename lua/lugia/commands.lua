@@ -1,5 +1,7 @@
-local M = {}
 local Git = require("lugia.git")
+
+---@class Commands
+local M = {}
 
 function M.setup()
 	vim.api.nvim_create_user_command("LugiaStatus", function()

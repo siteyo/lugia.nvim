@@ -1,8 +1,11 @@
 local View = require("lugia.view")
 
+---@class Status
+---@field view View
 local M = {}
 
 function M.new()
+  ---@type Status
 	local self = setmetatable({}, { __index = M })
 	return self:init()
 end
@@ -19,16 +22,17 @@ function M:setup()
 	end, { buffer = self.view.buf })
 
 	vim.keymap.set("n", "<cr>", function()
-		self:open_file()
+		self:go_to_file()
     self:close()
 	end, { buffer = self.view.buf })
 end
 
+---@param lines string[]
 function M:set_lines(lines)
 	vim.api.nvim_buf_set_lines(self.view.buf, 0, -1, false, lines)
 end
 
-function M:open_file()
+function M:go_to_file()
 	local line = vim.api.nvim_get_current_line()
 	local function trim(s)
 		return string.gsub(s, "^%s*(.-)%s*$", "%1")

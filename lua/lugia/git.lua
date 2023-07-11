@@ -1,7 +1,13 @@
 local Job = require("plenary.job")
 
+---@alias Subcommand fun(...: string):string[]
+
+---@class Git
+---@field root_path string
+---@field status Subcommand
 local M = {}
 
+---@param cmd string
 local function command_factory(cmd)
 	local cli = M.new()
 	return function(...)

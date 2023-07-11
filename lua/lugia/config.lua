@@ -1,3 +1,4 @@
+---@class Config
 local M = {}
 
 M.defaults = {}
