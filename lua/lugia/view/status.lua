@@ -1,11 +1,13 @@
 local View = require("lugia.view")
+local Parser = require("lugia.view.parser")
+local Git = require("lugia.git")
 
 ---@class Status
 ---@field view View
 local M = {}
 
 function M.new()
-  ---@type Status
+	---@type Status
 	local self = setmetatable({}, { __index = M })
 	return self:init()
 end
@@ -23,13 +25,14 @@ function M:setup()
 
 	vim.keymap.set("n", "<cr>", function()
 		self:go_to_file()
-    self:close()
+		self:close()
 	end, { buffer = self.view.buf })
 end
 
----@param lines string[]
-function M:set_lines(lines)
-	vim.api.nvim_buf_set_lines(self.view.buf, 0, -1, false, lines)
+function M:update()
+	local lines = Git.status("-s")
+	local text = Parser.status_short(lines)
+	self.view:render(text)
 end
 
 function M:go_to_file()
@@ -45,6 +48,7 @@ function M:go_to_file()
 end
 
 function M:open()
+	self:update()
 	self.view:open()
 end
 
