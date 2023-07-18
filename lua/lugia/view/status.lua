@@ -14,11 +14,11 @@ end
 
 function M:init()
 	self.view = View.new({ name = "Lugia Status" })
-	self:setup()
+	self:set_keymap()
 	return self
 end
 
-function M:setup()
+function M:set_keymap()
 	vim.keymap.set("n", "q", function()
 		self:close()
 	end, { buffer = self.view.buf })
