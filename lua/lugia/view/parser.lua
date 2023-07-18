@@ -9,11 +9,11 @@ function M.status_short(lines)
 		local X = string.sub(line, 1, 1)
 		local Y = string.sub(line, 2, 2)
 		if X == "?" and Y == "?" then
-			text:append(line, { hl_group = "Error", end_col = 2 })
+			text:append(line, { hl_group = "LugiaUnstaged", end_col = 2 })
 		elseif X ~= " " and Y == " " then
-			text:append(line, { hl_group = "Character", end_col = 2 })
+			text:append(line, { hl_group = "LugiaStaged", end_col = 2 })
 		elseif X == " " and Y ~= " " then
-			text:append(line, { hl_group = "Error", end_col = 2 })
+			text:append(line, { hl_group = "LugiaUnstaged", end_col = 2 })
 		else
 			text:append(line)
 		end
