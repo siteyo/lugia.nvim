@@ -5,7 +5,7 @@ local M = {}
 
 function M.setup()
 	vim.api.nvim_create_user_command("LugiaStatus", function()
-		require("lugia.view.status").new():open()
+		require("lugia.view.status").show()
 	end, {})
 
 	vim.api.nvim_create_user_command("LugiaCommit", function()

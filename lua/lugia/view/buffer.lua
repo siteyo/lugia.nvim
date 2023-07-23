@@ -1,18 +1,20 @@
 local Config = require("lugia.config")
 
----@class ViewOptions
+---@class BufferOptions
 ---@field name string
 
----@class View
+---@class Buffer
 ---@field buf number
 local M = {}
 
+---@class BufferOptions
 function M.new(opts)
-	---@type View
+	---@type Buffer
 	local self = setmetatable({}, { __index = M })
 	return self:init(opts or {})
 end
 
+---@class BufferOptions
 function M:init(opts)
 	self.buf = vim.api.nvim_create_buf(true, true) -- TODO: make it configurable
 
@@ -20,6 +22,10 @@ function M:init(opts)
 		vim.api.nvim_buf_set_name(self.buf, opts.name)
 	end
 	return self
+end
+
+function M:id()
+  return self.buf
 end
 
 function M:open()
