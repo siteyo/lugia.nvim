@@ -10,12 +10,12 @@ local M = {}
 M.view = nil
 
 function M.visible()
-  return M.view and vim.api.nvim_buf_is_valid(M.view.buf)
+	return M.view and vim.api.nvim_buf_is_valid(M.view.buf)
 end
 
 function M.show()
-  M.view = M.visible() and M.view or M.new()
-  M.view:open()
+	M.view = M.visible() and M.view or M.new()
+	M.view:open()
 end
 
 function M.new()
@@ -42,7 +42,7 @@ function M:set_keymap()
 end
 
 function M:update()
-  vim.bo[self.buf:id()].modifiable = true
+	vim.bo[self.buf:id()].modifiable = true
 	local lines = Git.status("-s")
 	local text = Parser.status_short(lines)
 	self.buf:render(text)
@@ -67,7 +67,7 @@ end
 
 function M:close()
 	self.buf:close()
-  M.view = nil
+	M.view = nil
 end
 
 return M

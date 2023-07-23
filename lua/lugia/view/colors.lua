@@ -9,7 +9,7 @@ function M.setup()
 
 	M.did_setup = true
 
-  -- Status
+	-- Status
 	vim.api.nvim_set_hl(0, "LugiaStaged", { link = "String", default = true })
 	vim.api.nvim_set_hl(0, "LugiaUnstaged", { link = "Error", default = true })
 end

@@ -1,5 +1,3 @@
-local Git = require("lugia.git")
-
 ---@class Commands
 local M = {}
 
