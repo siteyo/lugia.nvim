@@ -1,35 +1,37 @@
-local Text = require("lugia.view.text")
+local Util = require("lugia.util")
+
+-- local Text = require("lugia.view.text")
 
 local M = {}
 
-local status = {
-	updated = "M",
-	type_changed = "T",
-	added = "A",
-	deleted = "D",
-	renamed = "R",
-	copied = "C",
-	untracked = "?",
-	ignored = "!",
-}
-
 ---@param lines string[]
-function M.status_short(lines)
-	local text = Text.new()
+function M.status_short_ml(lines)
+	---@type ParsedStatus[]
+	local parsed = {}
+
+	-- local text = Text.new()
 	for _, line in ipairs(lines) do
-		local x = string.sub(line, 1, 1)
-		local y = string.sub(line, 2, 2)
-		local rest = string.sub(line, 3)
-		if x == status.untracked or x == status.ignored then
-			text:append(x, "LugiaUnstaged")
-		else
-			text:append(x, "LugiaStaged")
-		end
-		text:append(y, "LugiaUnstaged")
-		text:append(rest)
-		text:insert_newline()
+		table.insert(parsed, {})
+    parsed[#parsed] = M.status_short_sl(line)
 	end
-	return text
+	return parsed
+	-- return text
+end
+
+---@param line string
+function M.status_short_sl(line)
+	---@type ParsedStatus
+	local parsed = {}
+	parsed.xcode = string.sub(line, 1, 1)
+	parsed.ycode = string.sub(line, 2, 2)
+
+	local paths = Util.wsplit(string.sub(line, 4))
+	parsed.orig_path = paths[1]
+	if #paths > 1 then
+		parsed.path = paths[3]
+	end
+
+	return parsed
 end
 
 return M

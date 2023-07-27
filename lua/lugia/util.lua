@@ -6,8 +6,9 @@ function M.trim(s)
 end
 
 ---@param s string
+---@return string[]
 function M.wsplit(s)
-	return vim.fn.split(s, " ")
+	return vim.split(s, " ", { trimempty = true })
 end
 
 return M

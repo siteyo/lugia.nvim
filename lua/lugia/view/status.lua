@@ -1,10 +1,25 @@
 local Buffer = require("lugia.view.buffer")
 local Parser = require("lugia.view.parser")
+local Text = require("lugia.view.text")
 local Git = require("lugia.git")
 
----@class Status
----@field view Status
+local status_code = {
+	updated = "M",
+	type_changed = "T",
+	added = "A",
+	deleted = "D",
+	renamed = "R",
+	copied = "C",
+	untracked = "?",
+	ignored = "!",
+}
+
+---@alias ParsedStatus {nr: number, xcode: string, ycode: string, orig_path: string, path?: string}
+
+---@class StatusView
+---@field view StatusView
 ---@field buf Buffer
+---@field parsed_status ParsedStatus[]
 local M = {}
 
 M.view = nil
@@ -19,7 +34,7 @@ function M.show()
 end
 
 function M.new()
-	---@type Status
+	---@type StatusView
 	local self = setmetatable({}, { __index = M })
 	return self:init()
 end
@@ -44,20 +59,29 @@ end
 function M:update()
 	vim.bo[self.buf:id()].modifiable = true
 	local lines = Git.status("-s")
-	local text = Parser.status_short(lines)
+  self.parsed_status = Parser.status_short_ml(lines)
+	local text = Text.new()
+	for _, line in ipairs(self.parsed_status) do
+		if line.xcode == status_code.untracked or line.xcode == status_code.ignored then
+			text:append(line.xcode, "LugiaUnstaged")
+		else
+			text:append(line.xcode, "LugiaStaged")
+		end
+		text:append(line.ycode, "LugiaUnstaged")
+		text:append(" ")
+		text:append(line.orig_path)
+		if line.path then
+			text:append(" -> " .. line.path)
+		end
+    text:insert_newline()
+	end
 	self.buf:render(text)
 end
 
 function M:go_to_file()
 	local line = vim.api.nvim_get_current_line()
-	local function trim(s)
-		return string.gsub(s, "^%s*(.-)%s*$", "%1")
-	end
-	local function split(s)
-		return vim.fn.split(s, " ")
-	end
-	local parse = split(trim(line))
-	vim.cmd("edit " .. parse[2])
+  local parsed = Parser.status_short_sl(line)
+	vim.cmd("edit " .. parsed.orig_path) --TODO: Do I need to check if the value is nil?
 end
 
 function M:open()
