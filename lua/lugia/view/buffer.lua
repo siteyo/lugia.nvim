@@ -1,5 +1,3 @@
--- local Config = require("lugia.config")
-
 ---@class BufferOptions
 ---@field name string
 
@@ -7,14 +5,14 @@
 ---@field buf number
 local M = {}
 
----@class BufferOptions
+---@param opts BufferOptions
 function M.new(opts)
 	---@type Buffer
 	local self = setmetatable({}, { __index = M })
 	return self:init(opts or {})
 end
 
----@class BufferOptions
+---@param opts BufferOptions
 function M:init(opts)
 	self.buf = vim.api.nvim_create_buf(true, true) -- TODO: make it configurable
 
