@@ -58,7 +58,7 @@ end
 
 function M:update()
   vim.bo[self.buf:id()].modifiable = true
-  local lines = Git.status("-s")
+  local lines = Git.status("--porcelain")
   self.parsed_status = Parser.status_short_ml(lines)
   local text = Text.new()
   for _, line in ipairs(self.parsed_status) do
