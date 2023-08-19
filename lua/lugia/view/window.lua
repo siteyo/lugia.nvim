@@ -1,20 +1,25 @@
 local Config = require("lugia.config")
 
+---@class WindowOptions
+---@field buf number
+---@field title? string
+---@field border? "single"|"double"
+
 ---@class Window
 ---@field win number
 ---@field win_opts {width: number, height: number, row: number, col: number, title?: string, border?: string}
 ---@field target_win number
 local M = {}
 
----@param buf number
-function M.new(buf)
+---@param opts WindowOptions
+function M.new(opts)
   local self = setmetatable({}, { __index = M })
-  return self:init(buf)
+  return self:init(opts)
 end
 
----@param buf number
-function M:init(buf)
-  self.buf = buf
+---@param opts WindowOptions
+function M:init(opts)
+  self.buf = opts.buf
   self.win_opts = {
     relative = "editor",
     style = "minimal",
@@ -23,6 +28,8 @@ function M:init(buf)
   self.win_opts.height = math.floor(vim.o.lines * 0.6)
   self.win_opts.row = math.floor((vim.o.lines - self.win_opts.height) / 2)
   self.win_opts.col = math.floor((vim.o.columns - self.win_opts.width) / 2)
+  self.win_opts.title = opts.title or ""
+  self.win_opts.border = opts.border or "none"
   return self
 end
 
