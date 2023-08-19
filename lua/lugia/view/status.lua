@@ -45,6 +45,8 @@ end
 function M:init()
   self.buf = Buffer.new({ name = "Lugia Status" })
   self.win = Window.new(self.buf:id())
+  self.win.win_opts.title = "Lugia Status"
+  self.win.win_opts.border = "single"
   self.target_win = vim.api.nvim_get_current_win()
   self:set_keymap()
   return self
