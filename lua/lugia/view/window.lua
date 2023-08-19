@@ -2,6 +2,7 @@ local Config = require("lugia.config")
 
 ---@class Window
 ---@field win number
+---@field win_opts {width: number, height: number, row: number, col: number, title?: string, border?: string}
 ---@field target_win number
 local M = {}
 
