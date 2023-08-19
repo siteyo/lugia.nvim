@@ -14,7 +14,7 @@ end
 
 ---@param opts BufferOptions
 function M:init(opts)
-  self.buf = vim.api.nvim_create_buf(true, true) -- TODO: make it configurable
+  self.buf = vim.api.nvim_create_buf(false, true) -- TODO: make it configurable
 
   if opts.name ~= nil then
     vim.api.nvim_buf_set_name(self.buf, opts.name)

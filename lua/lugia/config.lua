@@ -1,9 +1,14 @@
 ---@class Config
 local M = {}
 
-M.defaults = {}
+---@class ConfigOptions
+---@field float boolean
+M.defaults = {
+  float = true,
+}
 
 function M.setup(options)
+  ---@type ConfigOptions
   M.options = vim.tbl_deep_extend("force", {}, M.defaults, options or {})
 end
 

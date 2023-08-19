@@ -1,6 +1,7 @@
 local Buffer = require("lugia.view.buffer")
 local Parser = require("lugia.view.parser")
 local Text = require("lugia.view.text")
+local Window = require("lugia.view.window")
 local Git = require("lugia.git")
 
 local status_code = {
@@ -19,7 +20,9 @@ local status_code = {
 ---@class StatusView
 ---@field view StatusView
 ---@field buf Buffer
+---@field win Window
 ---@field parsed_status ParsedStatus[]
+---@field target_win number
 local M = {}
 
 M.view = nil
@@ -41,6 +44,8 @@ end
 
 function M:init()
   self.buf = Buffer.new({ name = "Lugia Status" })
+  self.win = Window.new(self.buf:id())
+  self.target_win = vim.api.nvim_get_current_win()
   self:set_keymap()
   return self
 end
@@ -81,15 +86,18 @@ end
 function M:go_to_file()
   local line = vim.api.nvim_get_current_line()
   local parsed = Parser.status_short_sl(line)
+  vim.api.nvim_set_current_win(self.target_win)
   vim.cmd("edit " .. parsed.orig_path) --TODO: Do I need to check if the value is nil?
 end
 
 function M:open()
   self:update()
+  self.win:open()
   self.buf:open()
 end
 
 function M:close()
+  self.win:close()
   self.buf:close()
   M.view = nil
 end
