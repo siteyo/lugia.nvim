@@ -87,7 +87,9 @@ function M:go_to_file()
   local line = vim.api.nvim_get_current_line()
   local parsed = Parser.status_short_sl(line)
   vim.api.nvim_set_current_win(self.target_win)
-  vim.cmd("edit " .. parsed.orig_path) --TODO: Do I need to check if the value is nil?
+
+  local target_path = parsed.path or parsed.orig_path
+  vim.cmd("edit " .. target_path) --TODO: Do I need to check if the value is nil?
 end
 
 function M:open()
