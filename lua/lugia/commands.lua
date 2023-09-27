@@ -7,7 +7,7 @@ function M.setup()
   end, {})
 
   vim.api.nvim_create_user_command("LugiaCommit", function()
-    vim.notify("Not yet implemented...")
+    require("lugia.view.commit").show()
   end, {})
 end
 

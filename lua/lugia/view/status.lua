@@ -1,7 +1,6 @@
-local Buffer = require("lugia.view.buffer")
+local View = require("lugia.view")
 local Parser = require("lugia.view.parser")
 local Text = require("lugia.view.text")
-local Window = require("lugia.view.window")
 local Git = require("lugia.git")
 
 local status_code = {
@@ -18,51 +17,41 @@ local status_code = {
 ---@alias ParsedStatus {nr: number, xcode: string, ycode: string, orig_path: string, path?: string}
 
 ---@class StatusView
----@field view StatusView
+---@field view View
 ---@field buf Buffer
 ---@field win Window
 ---@field parsed_status ParsedStatus[]
 ---@field target_win number
 local M = {}
 
+---@type View
 M.view = nil
 
-function M.visible()
-  return M.view and vim.api.nvim_buf_is_valid(M.view.buf)
-end
-
 function M.show()
-  M.view = M.visible() and M.view or M.new()
+  M.view = M.view and M.view.visible()
+    or View.new({
+      buf_name = "Lugia Status",
+      win_title = "Lugia Status",
+      win_border = "single",
+    })
+  M.view:setup({ set_keymap = M.set_keymap, pre_open = M.update })
   M.view:open()
-end
-
-function M.new()
-  ---@type StatusView
-  local self = setmetatable({}, { __index = M })
-  return self:init()
-end
-
-function M:init()
-  self.buf = Buffer.new({ name = "Lugia Status" })
-  self.win = Window.new({ buf = self.buf:id(), title = "Lugia Status", border = "single" })
-  self.target_win = vim.api.nvim_get_current_win()
-  self:set_keymap()
-  return self
 end
 
 function M:set_keymap()
   vim.keymap.set("n", "q", function()
-    self:close()
-  end, { buffer = self.buf:id() })
+    M.view:close()
+    M.view = nil
+  end, { buffer = M.view.buf:id() })
 
   vim.keymap.set("n", "<cr>", function()
-    self:go_to_file()
-    self:close()
-  end, { buffer = self.buf:id() })
+    M:go_to_file()
+    M.view:close()
+  end, { buffer = M.view.buf:id() })
 end
 
 function M:update()
-  vim.bo[self.buf:id()].modifiable = true
+  vim.bo[M.view.buf:id()].modifiable = true
   local lines = Git.status("--porcelain")
   self.parsed_status = Parser.status_short_ml(lines)
   local text = Text.new()
@@ -80,28 +69,16 @@ function M:update()
     end
     text:insert_newline()
   end
-  self.buf:render(text)
+  M.view.buf:render(text)
 end
 
 function M:go_to_file()
   local line = vim.api.nvim_get_current_line()
   local parsed = Parser.status_short_sl(line)
-  vim.api.nvim_set_current_win(self.target_win)
+  vim.api.nvim_set_current_win(M.view.target_win)
 
   local target_path = parsed.path or parsed.orig_path
   vim.cmd("edit " .. target_path) --TODO: Do I need to check if the value is nil?
-end
-
-function M:open()
-  self:update()
-  self.win:open()
-  self.buf:open()
-end
-
-function M:close()
-  self.win:close()
-  self.buf:close()
-  M.view = nil
 end
 
 return M

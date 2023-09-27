@@ -3,7 +3,7 @@ local Config = require("lugia.config")
 ---@class WindowOptions
 ---@field buf number
 ---@field title? string
----@field border? "single"|"double"
+---@field border? "single" | "double" | "none"
 
 ---@class Window
 ---@field win number
