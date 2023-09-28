@@ -27,8 +27,12 @@ local M = {}
 ---@type View
 M.view = nil
 
+function M.visible()
+  return M.view and vim.api.nvim_buf_is_valid(M.view.buf:id())
+end
+
 function M.show()
-  M.view = M.view and M.view.visible()
+  M.view = M.visible() and M.view
     or View.new({
       buf_name = "Lugia Status",
       win_title = "Lugia Status",

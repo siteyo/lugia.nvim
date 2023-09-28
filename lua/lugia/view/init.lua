@@ -28,10 +28,6 @@ M.pre_close = nil
 M.post_close = nil
 M.set_keymap = nil
 
-function M.visible()
-  return M.view and vim.api.nvim_buf_is_valid(M.view.buf:id())
-end
-
 ---@param opts ViewOptions
 function M.new(opts)
   ---@type View
